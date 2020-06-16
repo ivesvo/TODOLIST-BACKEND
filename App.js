@@ -7,7 +7,7 @@ function loadData(){
     const buffer = fs.readFileSync("data.json") // read file to buffer/binary  data
     const data = buffer.toString()
     const dataObj = JSON.parse(data) // stringify it
-    console.log(JSON.parse(data)) //convert json into js object
+    // console.log(JSON.parse(data)) //convert json into js object
     return dataObj
 } catch (err){
     return []
@@ -24,6 +24,19 @@ function addTodo(todo, complete){
     const data = loadData()
     const newTodo = {todo: todo, complete: complete} // if the same, can skip it 
     data.push(newTodo)
+    saveData(data)
+}
+
+function toggleList(id){
+    const data = loadData()
+    data.forEach((item,idx)=>{
+        if (idx === id) {
+            console.log("hehehe")
+            item.complete = item.complete? false : true
+            
+        }
+    })
+    console.log(data)
     saveData(data)
 }
 
@@ -170,6 +183,23 @@ yargs.command({
        
         console.log(chalk.black.bgGreenBright.bold("Finished deleting your todo list"))
 
+    }
+
+})
+
+yargs.command({
+    command: "toggle",
+    describe: "toggle the status",
+    builder:{
+        id:{
+            type: "int",
+            demandOption: false,
+            alias: "s"
+        }
+
+    },
+    handler: function({id}){
+        toggleList(id)
     }
 
 })
